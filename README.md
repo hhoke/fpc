@@ -6,12 +6,18 @@ Double-check a long path and find errors faster.
 user@host:~$ fpc /srv/users/shared/brain_masks/mnimask_thresh_clean.nii.gz
 path exists up to '/srv/users/shared/brain_masks'
 ==========| 'mnimask_thresh_clean.nii.gz' does not exist
-user@host:~$ fpc /srv/users/shared/brain_masks/mnimask_thresh_clean.nii.gz --parseable
-/srv/users/shared/brain_masks
 user@host:~$ fpc /srv/users/shared/brain_masks/mnimask_thresh_clean.nii
 user@host:~$
 ```
 In this case, `/srv/users/shared/brain_masks/mnimask_thresh_clean.nii` actually exists.
+
+You can also use in more programmatic ways:
+
+```
+user@host:~$ pushd $(fpc /var/folders/zb/asdfalsdfsadfasdkfasjdfalsdkfa/T/tmp.8BMZGDoS/notDir --parseable)
+/var/folders/zb/asdfalsdfsadfasdkfasjdfalsdkfa/T/tmp.8BMZGDoS ~
+user@host:tmp.8BMZGDoS$ 
+```
 
 ## usage
 Designed to take one argument, the path to be checked. Returns 66 if a file or directory is not found, or 77 if there is a permissions error, and outputs report to stdout. If no error is found, return value is 0.
