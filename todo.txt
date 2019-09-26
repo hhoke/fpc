@@ -1,0 +1,14 @@
+first priority -- write something that crawls from root up, stops at the first break.
+X fpc: for fast path checker
+X ppc: path permissions checker
+  ipc.py: interactive path checker 
+  fpaf.py: fast path autofixer 
+
+fpc, just an checker, works great. I think I'll share it.
+PPC is the next no-brainer that might actually be useful.
+fpaf is kind of a pipe dream. Right now, it takes WAY too long.
+I can improve this by running potential results through a filter. YOu don't need to compute the full levenshtein distance. THere's got to be some kind of short-circuit version of levenshtein.
+FPAF will really only be useful in a fraction of cases. Many cases are not going to be spelling errors, but instead forgetting to include a leading / or something like that.
+
+FPC needs work, as it only works for absolute paths.
+Is this a good goal? might make things unneccessarily complicated. That's OK though!

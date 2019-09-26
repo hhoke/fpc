@@ -1,0 +1,58 @@
+#!/bin/bash
+
+function ppc { 
+   if [ "$#" -ne "2" ]; then
+		echo "Usage: $0 <-r,-w,-x> <path>" >&2
+    return 1
+  fi
+  local fullPath=$2
+  local i
+  local pathChunk
+  local builtPath
+  local lastExistingPath
+  local dirPath="$(dirname "$fullPath")"
+   
+  if [ -e "$fullPath" ];then
+    if [ ! "$1" "$fullPath" ];then
+      echo "==========| '$fullPath' does not have permission '$1'"
+      return 1
+    else
+      return 0
+    fi
+  fi
+
+  if [ "$dirPath" == '.' ];then
+    dirPath="$PWD"
+  fi
+
+  while IFS='/' read -ra DIR; do
+    for i in "${DIR[@]}"; do
+      pathChunk=$i
+      if [ -z "$pathChunk" ]; then
+        #absolute path
+        continue
+      fi
+      builtPath="$builtPath"/"$pathChunk"
+      if [ ! -x $builtPath ];then
+        echo "path exists with -x permissions up to '$lastExistingPath'"
+        if [ ! -e $builtPath ];then
+          echo "==========| '$pathChunk' does not exist"
+          if [ ! -x $builtPath ];then
+            echo "==========| '$pathChunk' does not have permission -x"
+          else
+            echo "==========| '$pathChunk' failed with unknown error"
+          fi
+
+        fi
+        return 1
+      else
+        lastExistingPath=$builtPath
+      fi
+    done
+  done <<< "$dirPath"
+}
+
+function fpc {
+  ppc -r "$1"
+  return $?
+}
