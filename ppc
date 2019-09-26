@@ -1,8 +1,19 @@
 #!/bin/bash
 
 function ppc { 
-   if [ "$#" -ne "2" ]; then
-		echo "Usage: $0 <-r,-w,-x> <path>" >&2
+  local parseable=0
+  if [ "$#" -eq "3" ]; then
+    if [ "$3" == "--parseable" ];then
+      parseable=1
+      # set arglist to only the first two
+      set -- "${@:1:2}"
+    else
+      echo 'unknown argument' >&2
+      return 1
+    fi
+  fi
+  if [ "$#" -ne "2" ]; then
+    echo "Usage: $0 <-r,-w,-x> (path) [--parseable]" >&2
     return 1
   fi
   local fullPath=$2
@@ -14,8 +25,12 @@ function ppc {
    
   if [ -e "$fullPath" ];then
     if [ ! "$1" "$fullPath" ];then
-      echo "==========| '$fullPath' does not have permission '$1'"
-      return 1
+      if [ "$parseable" -eq "0" ];then
+        echo "'$fullPath' does not have permission $1" >&2
+      else
+        echo -n "$dirPath" >&2
+      fi
+      return 77
     else
       return 0
     fi
@@ -34,25 +49,32 @@ function ppc {
       fi
       builtPath="$builtPath"/"$pathChunk"
       if [ ! -x $builtPath ];then
-        echo "path exists with -x permissions up to '$lastExistingPath'"
-        if [ ! -e $builtPath ];then
-          echo "==========| '$pathChunk' does not exist"
-          if [ ! -x $builtPath ];then
-            echo "==========| '$pathChunk' does not have permission -x"
-          else
-            echo "==========| '$pathChunk' failed with unknown error"
-          fi
-
+        # path does not exist with -x permissions
+        if [ "$parseable" -eq "0" ];then
+          echo "path exists with -x permissions up to '$lastExistingPath'" >&2
+        else
+          echo -n "$lastExistingPath" >&2
         fi
-        return 1
+        # do we lack permissions or simply not exist?
+        if [ ! -e $builtPath ];then
+            if [ "$parseable" -eq "0" ];then
+              echo "==========| '$pathChunk' does not exist" >&2
+            fi
+            return 66
+        else #file exists, so must be a permission error
+          if [ "$parseable" -eq "0" ];then
+            echo "==========| '$pathChunk' does not have permission -x" >&2
+          fi
+          return 77
+        fi
       else
         lastExistingPath=$builtPath
       fi
     done
-  done <<< "$dirPath"
+  done <<< "$fullPath"
 }
 
 function fpc {
-  ppc -r "$1"
+  ppc -r "$@"
   return $?
 }

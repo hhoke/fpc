@@ -12,3 +12,14 @@ FPAF will really only be useful in a fraction of cases. Many cases are not going
 
 FPC needs work, as it only works for absolute paths.
 Is this a good goal? might make things unneccessarily complicated. That's OK though!
+
+# 20190926
+
+New idea from reddit: more meaningful exit codes. I'll definitely include one for 'permissions error'. I'll go off of /usr/include/sysexits.h, and use 66 for file not found and 77 for permissions. 
+After some further digging, I also realized my 'path exists up to' functionality is basically covered by [namei](https://linux.die.net/man/1/namei) and tree -pd . So I think my main goal going forward is to cover the functionality that namei leaves out.
+The things I can do differently are:                                                                                                                                                                                                      
+1) provide the full path in a way that can be directly copied and pasted to find out the source of the problem (done)                                                                                                                     
+2) provide more meaningful error codes than just 0 and 1                                                                                                                                                                                  
+3) --parseable parseable option so output can be used directly in a script                                                                                                                                                                         
+                                                                                                                                                                                                                                          
+I'm pretty sure I originally remembered namei, which is why I wanted to originally make this a spell-checker.  But the focus on finding spelling errors still produced a very tiny bit of UI innovation that makes the project worthwhile!
