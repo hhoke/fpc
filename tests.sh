@@ -58,7 +58,7 @@ function test_suite {
 function test_error_message {
   cmd=$1
   intended_error=$2
-  error_string="$($cmd 2>&1)"
+  error_string="$($cmd)"
   returnval=$?
   if [ "$intended_error" != "$error_string" ];then
     echo

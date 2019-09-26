@@ -8,12 +8,12 @@ function ppc {
       # set arglist to only the first two
       set -- "${@:1:2}"
     else
-      echo 'unknown argument' >&2
+      echo 'unknown argument' 
       return 1
     fi
   fi
   if [ "$#" -ne "2" ]; then
-    echo "Usage: $0 <-r,-w,-x> (path) [--parseable]" >&2
+    echo "Usage: $0 <-r,-w,-x> (path) [--parseable]" 
     return 1
   fi
   local fullPath=$2
@@ -26,9 +26,9 @@ function ppc {
   if [ -e "$fullPath" ];then
     if [ ! "$1" "$fullPath" ];then
       if [ "$parseable" -eq "0" ];then
-        echo "'$fullPath' does not have permission $1" >&2
+        echo "'$fullPath' does not have permission $1" 
       else
-        echo -n "$dirPath" >&2
+        echo -n "$dirPath" 
       fi
       return 77
     else
@@ -51,19 +51,19 @@ function ppc {
       if [ ! -x $builtPath ];then
         # path does not exist with -x permissions
         if [ "$parseable" -eq "0" ];then
-          echo "path exists with -x permissions up to '$lastExistingPath'" >&2
+          echo "path exists with -x permissions up to '$lastExistingPath'" 
         else
-          echo -n "$lastExistingPath" >&2
+          echo -n "$lastExistingPath" 
         fi
         # do we lack permissions or simply not exist?
         if [ ! -e $builtPath ];then
             if [ "$parseable" -eq "0" ];then
-              echo "==========| '$pathChunk' does not exist" >&2
+              echo "==========| '$pathChunk' does not exist" 
             fi
             return 66
         else #file exists, so must be a permission error
           if [ "$parseable" -eq "0" ];then
-            echo "==========| '$pathChunk' does not have permission -x" >&2
+            echo "==========| '$pathChunk' does not have permission -x" 
           fi
           return 77
         fi
